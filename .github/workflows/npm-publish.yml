@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Xavia Bot CI
 
 on:
   push:
@@ -9,20 +9,38 @@ on:
 jobs:
   build:
 
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [16.x] # Choose the Node.js version you're targeting
+        # You can add more versions if you want to test with multiple Node.js versions
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install
-    - run: npm start
+
+    - name: Install Dependencies
+      run: npm install
+
+    # If you have tests defined in your package.json or test suite, run tests
+    - name: Run Tests
+      run: npm test
+
+    # Run linting if you have a linter configured (like ESLint)
+    - name: Lint Code
+      run: npm run lint
+
+    # Optionally, you can build the bot if it has a build step
+    - name: Build Bot
+      run: npm run build
+
+    # Start the bot in development mode to ensure it works (can be skipped in CI)
+    - name: Start Bot
+      run: npm start
